@@ -1,31 +1,34 @@
-version: '3.8'
+version: '3.8'  # Version de la syntaxe Docker Compose
 
 services:
+  # Service de base de données MySQL
   db:
-    image: mysql:5.7
-    container_name: wordpress-db
-    restart: always
+    image: mysql:5.7  # Image officielle MySQL version 5.7
+    container_name: wordpress-db  # Nom du conteneur MySQL
+    restart: always  # Redémarre automatiquement en cas de crash
     volumes:
-      - db_data:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wp_user
-      MYSQL_PASSWORD: wp_pass
+      - db_data:/var/lib/mysql  # Volume pour persister les données de la base
+    environment:  # Variables d'environnement pour configurer MySQL
+      MYSQL_ROOT_PASSWORD: rootpass  # Mot de passe du compte root MySQL
+      MYSQL_DATABASE: wordpress      # Base de données par défaut
+      MYSQL_USER: wp_user            # Nom d'utilisateur MySQL
+      MYSQL_PASSWORD: wp_pass        # Mot de passe de l'utilisateur
 
+  # Service WordPress
   wordpress:
-    image: wordpress:latest
-    container_name: wordpress-app
+    image: wordpress:latest  # Image officielle WordPress (dernière version)
+    container_name: wordpress-app  # Nom du conteneur WordPress
     depends_on:
-      - db
+      - db  # Ce service dépend du service "db" (MySQL)
     ports:
-      - "8081:80"
-    restart: always
-    environment:
-      WORDPRESS_DB_HOST: db:3306
-      WORDPRESS_DB_USER: wp_user
-      WORDPRESS_DB_PASSWORD: wp_pass
-      WORDPRESS_DB_NAME: wordpress
+      - "8081:80"  # Mappe le port 8081 de l'hôte vers le port 80 du conteneur
+    restart: always  # Redémarre automatiquement en cas de problème
+    environment:  # Variables d'environnement pour connecter WordPress à MySQL
+      WORDPRESS_DB_HOST: db:3306      # Hôte et port de la base de données
+      WORDPRESS_DB_USER: wp_user      # Utilisateur pour la base
+      WORDPRESS_DB_PASSWORD: wp_pass  # Mot de passe correspondant
+      WORDPRESS_DB_NAME: wordpress    # Nom de la base de données
 
+# Déclaration du volume utilisé pour stocker les données MySQL
 volumes:
   db_data:
